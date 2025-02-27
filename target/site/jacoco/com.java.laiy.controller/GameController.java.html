@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tictactoe</a> &gt; <a href="index.source.html" class="el_package">com.java.laiy.controller</a> &gt; <span class="el_source">GameController.java</span></div><h1>GameController.java</h1><pre class="source lang-java linenums">package com.java.laiy.controller;
+
+import com.java.laiy.model.Board;
+import com.java.laiy.model.Figure;
+import com.java.laiy.model.Player;
+import com.java.laiy.model.exceptions.InvalidPointException;
+import com.java.laiy.model.exceptions.PointOccupiedException;
+
+public class GameController {
+
+    private static final String GAME_NAME = &quot;XO&quot;;
+
+    private static final int FIRST_PLAYER = 0;
+
+    private static final int SECOND_PLAYER = 1;
+
+    private static final int DIAG_UP = 1;
+
+    private static final int DIAG_DOWN = 0;
+
+    private static final int DIAGS_FOR_CHECK = 2;
+
+    private final String gameName;
+
+    private final Player[] players;
+
+    private final Board board;
+
+    private final int boardLength;
+
+<span class="fc" id="L31">    public GameController(final String gameName, final Player[] players, final Board board) {</span>
+<span class="pc bpc" id="L32" title="2 of 4 branches missed.">        if (gameName == null || gameName.isEmpty()) {</span>
+<span class="nc" id="L33">            this.gameName = GAME_NAME;</span>
+        } else {
+<span class="fc" id="L35">            this.gameName = gameName;</span>
+        }
+<span class="fc" id="L37">        this.board = board;</span>
+<span class="fc" id="L38">        this.players = players;</span>
+<span class="fc" id="L39">        this.boardLength = board.getFiguresArray().length;</span>
+<span class="fc" id="L40">    }</span>
+
+    public Player getWinner() {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (Player playerForCheck : players) {</span>
+<span class="fc" id="L44">            String figureToCheck = playerForCheck.getFigure().toString();</span>
+<span class="pc bpc" id="L45" title="3 of 6 branches missed.">            if (checkRowsForWin(figureToCheck) || checkLinesForWin(figureToCheck) || checkDiagsForWin(figureToCheck)) {</span>
+<span class="nc" id="L46">                return playerForCheck;</span>
+            }
+        }
+<span class="fc" id="L49">        return null;</span>
+    }
+
+    public String getGameName() {
+<span class="nc" id="L53">        return gameName;</span>
+    }
+
+    public Player[] getPlayers() {
+<span class="fc" id="L57">        return players;</span>
+    }
+
+    public Board getBoard() {
+<span class="fc" id="L61">        return board;</span>
+    }
+
+    public void move(final int x, final int y, final Player player) throws PointOccupiedException {
+        try {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (board.getFigure(x, y) != null) {</span>
+<span class="nc" id="L67">                throw new PointOccupiedException();</span>
+            } else {
+                try {
+<span class="nc" id="L70">                    board.setFigure(x, y, player.getFigure());</span>
+<span class="nc" id="L71">                } catch (InvalidPointException e) {</span>
+<span class="nc" id="L72">                    e.printStackTrace();</span>
+<span class="nc" id="L73">                }</span>
+            }
+<span class="nc" id="L75">        } catch (InvalidPointException e) {</span>
+<span class="nc" id="L76">            e.printStackTrace();</span>
+<span class="nc" id="L77">        }</span>
+<span class="nc" id="L78">    }</span>
+
+    public boolean getNextTurn() {
+<span class="fc" id="L81">        final Figure[][] figures = getBoard().getFiguresArray();</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (getWinner() != null) {</span>
+<span class="nc" id="L83">            return false;</span>
+        }
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        for (Figure[] figureArray : figures) {</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">            for (Figure figureValue : figureArray) {</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">                if (figureValue == null) {</span>
+<span class="fc" id="L88">                    return true;</span>
+                }
+            }
+        }
+<span class="nc" id="L92">        return false;</span>
+    }
+
+    public Player getCurrentPlayer(final Player firstPlayer) {
+<span class="nc" id="L96">        int firstPlayerNum = getFirstPlayerNum(firstPlayer);</span>
+<span class="nc" id="L97">        int[] playersTurns = getPlayersTurns();</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (playersTurns[FIRST_PLAYER] == playersTurns[SECOND_PLAYER]) {</span>
+<span class="nc" id="L100">            return players[firstPlayerNum];</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        } else if (firstPlayerNum == FIRST_PLAYER) {</span>
+<span class="nc" id="L102">            return players[SECOND_PLAYER];</span>
+        } else {
+<span class="nc" id="L104">            return players[FIRST_PLAYER];</span>
+        }
+    }
+
+    private boolean checkLinesForWin(final String playerFigure) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        for (int row = 0; row &lt; boardLength; row++) {</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">            if (getPlayerForLine(row, playerFigure) == boardLength) {</span>
+<span class="nc" id="L111">                return true;</span>
+            }
+        }
+<span class="fc" id="L114">        return false;</span>
+    }
+
+    private boolean checkRowsForWin(final String playerFigure) {
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        for (int column = 0; column &lt; boardLength; column++) {</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            if (getPlayerForColumn(column, playerFigure) == boardLength) {</span>
+<span class="nc" id="L120">                return true;</span>
+            }
+        }
+<span class="fc" id="L123">        return false;</span>
+    }
+
+    private boolean checkDiagsForWin(final String playerFigure) {
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int diag_direction = 0; diag_direction &lt; DIAGS_FOR_CHECK; diag_direction++) {</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">            if (getPlayerForDiag(diag_direction, playerFigure) == boardLength) {</span>
+<span class="nc" id="L129">                return true;</span>
+            }
+        }
+<span class="fc" id="L132">        return false;</span>
+    }
+
+    private int getPlayerForDiag(final int direction, final String playerFigure) {
+<span class="fc" id="L136">        int playerDiagCount = 0;</span>
+        try {
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            if (direction == DIAG_UP) {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">                for (int i = 0; i &lt; boardLength; i++) {</span>
+<span class="pc bpc" id="L140" title="3 of 4 branches missed.">                    if ((board.getFigure(i, i) != null) &amp;&amp; equalsFigures(i, i, playerFigure)) {</span>
+<span class="nc" id="L141">                        playerDiagCount++;</span>
+                    }
+                }
+            }
+<span class="fc bfc" id="L145" title="All 2 branches covered.">            if (direction == DIAG_DOWN) {</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">                for (int i = 0; i &lt; boardLength; i++) {</span>
+<span class="fc" id="L147">                    int row = (boardLength - 1) - i;</span>
+<span class="pc bpc" id="L148" title="3 of 4 branches missed.">                    if ((board.getFigure(row, i) != null) &amp;&amp; equalsFigures(row, i, playerFigure)) {</span>
+<span class="nc" id="L149">                        playerDiagCount++;</span>
+                    }
+                }
+            }
+<span class="nc" id="L153">        } catch (InvalidPointException e) {</span>
+<span class="nc" id="L154">            e.printStackTrace();</span>
+<span class="fc" id="L155">        }</span>
+<span class="fc" id="L156">        return playerDiagCount;</span>
+    }
+
+    private int getPlayerForColumn(final int column, final String playerFigure) {
+<span class="fc" id="L160">        int playerColumnCount = 0;</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        for (int i = 0; i &lt; boardLength; i++) {</span>
+            try {
+<span class="pc bpc" id="L163" title="3 of 4 branches missed.">                if ((board.getFigure(i, column) != null) &amp;&amp; equalsFigures(i, column, playerFigure)) {</span>
+<span class="nc" id="L164">                    playerColumnCount++;</span>
+                }
+<span class="nc" id="L166">            } catch (InvalidPointException e) {</span>
+<span class="nc" id="L167">                e.printStackTrace();</span>
+<span class="fc" id="L168">            }</span>
+        }
+<span class="fc" id="L170">        return playerColumnCount;</span>
+    }
+
+    private int[] getPlayersTurns() {
+<span class="nc" id="L174">        int[] playersTurns = new int[players.length];</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        for (int playerNum = 0; playerNum &lt; players.length; playerNum++) {</span>
+<span class="nc" id="L176">            playersTurns[playerNum] = getPlayerForBoard(players[playerNum].getFigure().toString());</span>
+        }
+<span class="nc" id="L178">        return playersTurns;</span>
+    }
+
+    private int getPlayerForBoard(final String playerFigure) {
+<span class="nc" id="L182">        int playerBoardCount = 0;</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        for (int i = 0; i &lt; boardLength; i++) {</span>
+<span class="nc" id="L184">            playerBoardCount += getPlayerForLine(i, playerFigure);</span>
+        }
+<span class="nc" id="L186">        return playerBoardCount;</span>
+    }
+
+    private int getPlayerForLine(final int row, final String playerFigure) {
+<span class="fc" id="L190">        int playerRowCount = 0;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        for (int i = 0; i &lt; board.getRowLength(row); i++) {</span>
+            try {
+<span class="pc bpc" id="L193" title="3 of 4 branches missed.">                if ((board.getFigure(row, i) != null) &amp;&amp; equalsFigures(row, i, playerFigure)) {</span>
+<span class="nc" id="L194">                    playerRowCount++;</span>
+                }
+<span class="nc" id="L196">            } catch (InvalidPointException e) {</span>
+<span class="nc" id="L197">                e.printStackTrace();</span>
+<span class="fc" id="L198">            }</span>
+        }
+<span class="fc" id="L200">        return playerRowCount;</span>
+    }
+
+    private int getFirstPlayerNum(final Player firstPlayer) {
+<span class="nc" id="L204">        int firstPlayerPositionNum = 0;</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        for (int num = 0; num &lt; players.length; num++) {</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">            if (players[num] == firstPlayer) {</span>
+<span class="nc" id="L207">                firstPlayerPositionNum = num;</span>
+            }
+        }
+<span class="nc" id="L210">        return firstPlayerPositionNum;</span>
+    }
+
+    private boolean equalsFigures(final int x, final int y, final String playerFigure) throws InvalidPointException {
+<span class="nc" id="L214">        return board.getFigure(x, y).toString().equals(playerFigure);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

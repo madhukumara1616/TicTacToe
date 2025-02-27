@@ -1,0 +1,15 @@
+com\java\laiy\model\Figure.class
+com\java\laiy\view\ConsoleView.class
+com\java\laiy\model\Player.class
+com\java\laiy\view\ConsoleMenuView.class
+com\java\laiy\model\exceptions\InvalidBoardSizeException.class
+com\java\laiy\controller\GameStarter.class
+com\java\laiy\view\IView.class
+com\java\laiy\model\exceptions\PointOccupiedException.class
+com\java\laiy\controller\Game.class
+com\java\laiy\Main.class
+com\java\laiy\model\Board.class
+com\java\laiy\controller\GameController.class
+com\java\laiy\model\exceptions\InvalidPointException.class
+com\java\laiy\model\Point.class
+com\java\laiy\model\exceptions\AbstractTicTacException.class
